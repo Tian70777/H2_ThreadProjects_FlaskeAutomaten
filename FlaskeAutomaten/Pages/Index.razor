@@ -1,0 +1,43 @@
+﻿@page "/"
+@using FlaskeAutomaten.Data
+@inject WeatherForecastService ForecastService
+@inject FlaskeAutomatenService FlaskeService
+
+<PageTitle>Index</PageTitle>
+
+<h1>Hello, Beverages!</h1>
+
+Welcome to the productionLine.
+<button @onclick="StartProcess">Start Process</button>
+
+<div id="logOutput">
+    <ul>
+        @foreach (var log in logs)
+        {
+            <li>@log</li>
+        }
+    </ul>
+</div>
+
+@code {
+    private List<string> logs = new List<string>();
+    private FlaskeAutomatenService flaskeAutomatenService = new FlaskeAutomatenService();
+
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
+        flaskeAutomatenService.OnLog += message => InvokeAsync(() => Log(message));
+    }
+
+    private void StartProcess()
+    {
+        flaskeAutomatenService.StartProcess();
+    }
+
+
+    private void Log(string message)
+    {
+        logs.Add(message);
+        StateHasChanged();
+    }
+}
